@@ -10,7 +10,7 @@ export default function RootNavigation() {
       screenOptions={{
         headerShown: false,
         contentStyle: {
-          backgroundColor: "",
+          backgroundColor: colors.background,
           flex: 1,
         },
       }}

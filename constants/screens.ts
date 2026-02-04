@@ -1,4 +1,4 @@
-export const ScreenName = {
+export const Screen = {
   // Root
   SplashScreen: "index",
 
