@@ -13,7 +13,6 @@ export const HeaderAtom = atom<HeaderProp>({ home_header: 0, tab_header: 0 });
 export default function useHeaderCalc() {
   const inset = useSafeAreaInsets();
   const [{ home_header, tab_header }, setAtom] = useAtom(HeaderAtom);
-
   const handleSetHeight = ({
     key,
     value,
@@ -34,7 +33,10 @@ export default function useHeaderCalc() {
   const handleGetHeight = async () => {
     const data = await StorageUtil.getData(StorageKey.HeaderHeight);
     if (data) {
-      setAtom(JSON.parse(data));
+      setAtom(data);
+      return data;
+    } else {
+      return { home_header: 0, tab_header: 0 };
     }
   };
 

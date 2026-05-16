@@ -1,16 +1,38 @@
-import useThemeStyle, { StyleParam } from "@/hooks/useThemeStyle";
-import { fastStyle, metricStyle } from "@/utils/styles";
+import ListProductItem from "@/components/common/item/list-product-item";
+import SizedBox from "@/components/common/sized-box";
+import { StyleParam } from "@/hooks/useThemeStyle";
+import { ProductItemType, ProductSample } from "@/mock/product.mock";
+import { fastStyle } from "@/utils/styles";
 import React from "react";
 import { FlatList, StyleSheet, View } from "react-native";
-import Header from "./header";
+import Header from "./home-content/header";
 
 export default function HomeContent() {
-  const { themeStyle } = useThemeStyle(styles);
+  const renderItem = ({
+    item,
+    index,
+  }: {
+    item: ProductItemType;
+    index: number;
+  }) => {
+    const isEven = index % 2 === 0;
+    const rowIndex = Math.floor(index / 2);
+    const isEvenRow = rowIndex % 2 === 0;
+
+    return (
+      <ListProductItem item={item} isEven={isEven} isEvenRow={isEvenRow} />
+    );
+  };
   return (
-    <View style={[metricStyle.paddingHorizontal(10), fastStyle.flex]}>
+    <View style={[fastStyle.flex]}>
       <FlatList
+        showsVerticalScrollIndicator={false}
         ListHeaderComponent={Header}
-        contentContainerStyle={fastStyle.flex}
+        numColumns={2}
+        data={ProductSample}
+        keyExtractor={(item) => item.id.toString()}
+        ListFooterComponent={<SizedBox height={90} />}
+        renderItem={renderItem}
       />
     </View>
   );

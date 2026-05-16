@@ -5,6 +5,23 @@
       "category": "Category",
       "cart": "Cart",
       "account": "Account"
+    },
+    "header": {},
+    "drawer": {
+      "about_us": "About Us",
+      "blog": "Blog",
+      "contact_us": "Contact Us",
+      "privacy_policy": "Privacy & Policies",
+      "refund_return": "Refund & Return Policies",
+      "shipping_policy": "Shipping Policies",
+      "term_condition": "Terms & Conditions",
+      "setting": "Setting"
+    },
+    "place_holder": {
+      "place_holder": "Search Category"
+    },
+    "section_header": {
+      "all_categories": "All Categories"
     }
   }
 }

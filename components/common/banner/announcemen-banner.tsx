@@ -25,6 +25,7 @@ export default function AnnouncementBanner() {
         <Image
           source={{ uri: item.image_url }}
           placeholder="blur"
+          contentFit="cover"
           style={themeStyle.image}
         />
       </GestureDetector>
@@ -32,17 +33,19 @@ export default function AnnouncementBanner() {
   };
   return (
     <View style={themeStyle.container}>
-      <Carousel
-        loop={true}
-        autoPlay={true}
-        snapEnabled={true}
-        pagingEnabled={true}
-        autoPlayInterval={4000}
-        width={Dimension.ScreenWidth - ms(20)}
-        height={(Dimension.ScreenWidth - ms(20)) * 0.5}
-        data={PromotionSample}
-        renderItem={renderItem}
-      />
+      <View style={themeStyle.wrapper}>
+        <Carousel
+          loop={true}
+          // autoPlay={true}
+          snapEnabled={true}
+          pagingEnabled={true}
+          autoPlayInterval={4000}
+          width={Dimension.ScreenWidth - ms(20)}
+          height={(Dimension.ScreenWidth - ms(20)) * 0.5}
+          data={PromotionSample}
+          renderItem={renderItem}
+        />
+      </View>
     </View>
   );
 }
@@ -51,17 +54,23 @@ const styles = ({ colors }: StyleParam) =>
   StyleSheet.create({
     container: {
       width: Dimension.ScreenWidth - ms(20),
-      alignSelf: "center",
       aspectRatio: 1 / 0.5,
       borderRadius: ms(10),
       ...fastStyle.shadow,
       shadowColor: colors.backDrop,
       backgroundColor: colors.surface,
+      alignSelf: "center",
       borderWidth: 1,
       borderColor: colors.background,
     },
     image: {
       width: "100%",
       height: "100%",
+    },
+    wrapper: {
+      width: "100%",
+      height: "100%",
+      borderRadius: ms(10),
+      overflow: "hidden",
     },
   });

@@ -1,12 +1,6 @@
+import CategoryContent from "@/components/app/(tab)/category/category-content";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
 
 export default function Page() {
-  return (
-    <View>
-      <Text>Page</Text>
-    </View>
-  );
+  return <CategoryContent />;
 }
-
-const styles = StyleSheet.create({});

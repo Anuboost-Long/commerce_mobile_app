@@ -27,6 +27,7 @@ export const Screen = {
     refund_return_policies: "refund-return-policies",
     shipping_policies: "shipping-policies",
     term_conditions: "term-conditions",
+    setting: "setting",
   },
 
   Payment: {

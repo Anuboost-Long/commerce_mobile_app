@@ -11,15 +11,21 @@ import { StyleSheet, View } from "react-native";
 import { ms } from "react-native-size-matters";
 
 export default function Page() {
-  const { themeStyle } = useThemeStyle(styles);
   const { handleGetHeight } = useHeaderCalc();
+  const { themeStyle } = useThemeStyle(styles);
+
+  const handleNavigate = async () => {
+    const data = await handleGetHeight();
+    if (data) {
+      NavigationHelper.reset({ pathname: Screen.Tab.home });
+    }
+  };
 
   useEffect(() => {
-    handleGetHeight();
     setTimeout(() => {
-      NavigationHelper.reset({ pathname: Screen.Tab.home });
+      handleNavigate();
     }, 1000);
-  });
+  }, []);
 
   return (
     <View style={themeStyle.container}>

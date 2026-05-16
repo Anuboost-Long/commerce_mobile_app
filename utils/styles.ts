@@ -77,13 +77,7 @@ export const fastStyle = StyleSheet.create({
     flex: 1,
   },
   shadow: {
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
-    elevation: 8,
+    boxShadow: "2px 2px 5px 0px rgba(0, 0, 0, 0.4)",
   },
   heavyShadow: {
     shadowOffset: {

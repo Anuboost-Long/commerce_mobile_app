@@ -1,12 +1,6 @@
+import AccountContent from "@/components/app/(tab)/account/account-content";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
 
 export default function Page() {
-  return (
-    <View>
-      <Text>Account</Text>
-    </View>
-  );
+  return <AccountContent />;
 }
-
-const styles = StyleSheet.create({});

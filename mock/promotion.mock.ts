@@ -4,7 +4,7 @@ export type PromotionItemtype = {
 };
 
 export const PromotionSample: PromotionItemtype[] = [
-  { id: 1, image_url: "https://placehold.co/1000x400" },
-  { id: 2, image_url: "https://placehold.co/1000x400" },
-  { id: 3, image_url: "https://placehold.co/1000x400" },
+  { id: 1, image_url: "https://placehold.co/1000x500" },
+  { id: 2, image_url: "https://placehold.co/1000x500" },
+  { id: 3, image_url: "https://placehold.co/1000x500" },
 ];

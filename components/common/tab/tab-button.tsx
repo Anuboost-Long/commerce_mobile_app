@@ -2,15 +2,13 @@ import { TabItem } from "@/constants/tab-resource";
 import useThemeStyle, { StyleParam } from "@/hooks/useThemeStyle";
 import { NavigationHelper } from "@/utils/navigation-helper";
 import { fastStyle } from "@/utils/styles";
-import React, { memo, useEffect } from "react";
+import React, { memo } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Animated, {
-  Easing,
   Extrapolation,
   interpolate,
   useAnimatedStyle,
   useSharedValue,
-  withTiming,
 } from "react-native-reanimated";
 import { ms } from "react-native-size-matters";
 import AppText from "../app-text";
@@ -24,28 +22,6 @@ const TabButton = ({ item, isActive }: TabButtonProp) => {
   const { themeStyle, theme, t } = useThemeStyle(styles);
   const Icon = item.icon;
   const progress = useSharedValue(0);
-
-  useEffect(() => {
-    if (isActive) {
-      active();
-    } else {
-      inactive();
-    }
-  }, [isActive]);
-
-  const active = () => {
-    progress.value = withTiming(1, {
-      duration: 700,
-      easing: Easing.in(Easing.linear),
-    });
-  };
-
-  const inactive = () => {
-    progress.value = withTiming(0, {
-      duration: 700,
-      easing: Easing.out(Easing.linear),
-    });
-  };
 
   const textStyle = useAnimatedStyle(() => {
     const Yvalue = interpolate(
@@ -97,22 +73,30 @@ const TabButton = ({ item, isActive }: TabButtonProp) => {
 
   return (
     <TouchableOpacity style={themeStyle.container} onPress={navigate}>
-      <Icon
-        width={ms(25)}
-        height={ms(25)}
-        fill={isActive ? theme.colors.primary : theme.colors.textSecondary}
-      />
+      <View
+        style={[themeStyle.iconContainer, isActive && themeStyle.iconActive]}
+      >
+        <Icon
+          width={ms(25)}
+          height={ms(25)}
+          fill={isActive ? theme.colors.primary : theme.colors.textSecondary}
+        />
+      </View>
+
       <View style={themeStyle.bottomContainer}>
         <Animated.View style={textStyle}>
           <AppText
             font="SemiBold"
             fontSize="SubText"
-            style={themeStyle.tabLabel}
+            style={[
+              themeStyle.tabLabel,
+              isActive && { color: theme.colors.primary },
+            ]}
           >
             {t(item.label)}
           </AppText>
         </Animated.View>
-        <Animated.View style={[indicatorStyle, themeStyle.indicator]} />
+        {/* <Animated.View style={[indicatorStyle, themeStyle.indicator]} /> */}
       </View>
     </TouchableOpacity>
   );
@@ -140,6 +124,16 @@ const styles = ({ colors }: StyleParam) =>
       height: ms(15),
       width: "100%",
       ...fastStyle.colCenter,
+    },
+    iconContainer: {
+      paddingHorizontal: ms(10),
+      paddingVertical: ms(2),
+      borderColor: "transparent",
+      borderRadius: ms(10),
+      overflow: "hidden",
+    },
+    iconActive: {
+      backgroundColor: "transparent",
     },
   });
 

@@ -10,6 +10,7 @@ interface AppTextProps {
   style?: StyleProp<TextStyle>;
   font?: FontKey;
   fontSize?: FontSizeKey;
+  numLines?: number;
 }
 
 export default function AppText({
@@ -17,17 +18,19 @@ export default function AppText({
   style,
   font = "Normal",
   fontSize = "Text",
+  numLines = 0,
 }: AppTextProps) {
   const { themeStyle, i18n } = useThemeStyle(styles);
   return (
     <Text
+      numberOfLines={numLines}
       style={[
         themeStyle.text,
         {
           fontFamily:
-            i18n.language === Languages.en
-              ? EnglishFont[font]
-              : KhmerFont[font],
+            i18n.language === Languages.kh
+              ? KhmerFont[font]
+              : EnglishFont[font],
 
           fontSize: FontSizes[fontSize],
         },

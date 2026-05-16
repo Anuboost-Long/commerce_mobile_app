@@ -1,12 +1,6 @@
+import CartContent from "@/components/app/(tab)/cart/cart-content";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
 
 export default function Page() {
-  return (
-    <View>
-      <Text>Page</Text>
-    </View>
-  );
+  return <CartContent />;
 }
-
-const styles = StyleSheet.create({});
