@@ -1,91 +1,87 @@
 import AppText from "@/components/common/app-text";
-import { BlurView } from "expo-blur";
+import { Feather } from "@expo/vector-icons";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { ms } from "react-native-size-matters";
-import { getCartPalette } from "./palette";
+import { useCartPalette } from "./palette";
 
-export default function CartHeaderHero({ itemCount }: { itemCount: number }) {
-  const palette = getCartPalette(false);
+export default function CartHeaderHero({
+  itemCount,
+  onToggleBulkEdit,
+  selectedCount,
+}: {
+  itemCount: number;
+  onToggleBulkEdit: () => void;
+  selectedCount: number;
+}) {
+  const palette = useCartPalette();
+  const isEditing = selectedCount > 0;
 
   return (
-    <BlurView intensity={40} style={[styles.container, { borderColor: palette.border }]}>
-      <View style={[styles.glowOne, { backgroundColor: palette.accentSoft }]} />
-      <View style={[styles.glowTwo, { backgroundColor: "rgba(217, 198, 255, 0.35)" }]} />
-      <AppText font="SemiBold" fontSize="SubText" style={[styles.eyebrow, { color: palette.accentStrong }]}>
-        YOUR RITUAL CART
-      </AppText>
-      <AppText font="Bold" fontSize="HeroText" style={[styles.title, { color: palette.text }]}>
-        Soft clinical beauty, ready to check out.
-      </AppText>
-      <AppText font="Medium" fontSize="Text" style={[styles.caption, { color: palette.subtext }]}>
-        Built for large baskets, live pricing, variant-heavy skincare, and frictionless mobile editing.
-      </AppText>
-      <View style={styles.metricsRow}>
-        <View style={[styles.metricCard, { backgroundColor: palette.cardSoft, borderColor: palette.border }]}>
-          <AppText font="Bold" fontSize="Title" style={{ color: palette.text }}>
-            {itemCount}
-          </AppText>
-          <AppText font="Medium" fontSize="SubText" style={{ color: palette.subtext }}>
-            Items in cart
-          </AppText>
-        </View>
-        <View style={[styles.metricCard, { backgroundColor: palette.cardSoft, borderColor: palette.border }]}>
-          <AppText font="Bold" fontSize="Title" style={{ color: palette.text }}>
-            Live
-          </AppText>
-          <AppText font="Medium" fontSize="SubText" style={{ color: palette.subtext }}>
-            Stock + price sync
-          </AppText>
-        </View>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: palette.card, borderColor: palette.border },
+      ]}
+    >
+      <View style={styles.copyWrap}>
+        <AppText font="Bold" fontSize="Title" style={{ color: palette.text }}>
+          Cart
+        </AppText>
+        <AppText
+          font="Medium"
+          fontSize="SubText"
+          style={{ color: palette.subtext }}
+        >
+          {isEditing ? `${selectedCount} selected` : `${itemCount} items`}
+        </AppText>
       </View>
-    </BlurView>
+      <Pressable
+        onPress={onToggleBulkEdit}
+        style={[
+          styles.editButton,
+          { backgroundColor: isEditing ? palette.cardSoft : palette.accentSoft },
+        ]}
+        accessibilityLabel={isEditing ? "Exit bulk edit" : "Bulk edit cart"}
+      >
+        <Feather
+          name={isEditing ? "check" : "edit-3"}
+          size={ms(15)}
+          color={palette.accentStrong}
+        />
+        <AppText
+          font="SemiBold"
+          fontSize="SubText"
+          style={{ color: palette.accentStrong }}
+        >
+          {isEditing ? "Done" : "Edit"}
+        </AppText>
+      </Pressable>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    overflow: "hidden",
-    borderRadius: ms(30),
+    borderRadius: ms(14),
     borderWidth: 1,
-    padding: ms(18),
-    gap: ms(12),
-    backgroundColor: "rgba(255,255,255,0.5)",
-  },
-  glowOne: {
-    position: "absolute",
-    width: ms(180),
-    height: ms(180),
-    borderRadius: ms(180),
-    top: ms(-70),
-    right: ms(-40),
-  },
-  glowTwo: {
-    position: "absolute",
-    width: ms(120),
-    height: ms(120),
-    borderRadius: ms(120),
-    bottom: ms(-30),
-    left: ms(-20),
-  },
-  eyebrow: {
-    letterSpacing: 1.2,
-  },
-  title: {
-    lineHeight: ms(30),
-  },
-  caption: {
-    lineHeight: ms(18),
-  },
-  metricsRow: {
+    paddingHorizontal: ms(12),
+    paddingVertical: ms(10),
     flexDirection: "row",
-    gap: ms(10),
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: ms(12),
   },
-  metricCard: {
+  copyWrap: {
     flex: 1,
-    borderRadius: ms(20),
-    borderWidth: 1,
-    padding: ms(12),
-    gap: ms(4),
+    gap: ms(2),
+  },
+  editButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: ms(6),
+    borderRadius: ms(999),
+    paddingHorizontal: ms(12),
+    paddingVertical: ms(8),
   },
 });

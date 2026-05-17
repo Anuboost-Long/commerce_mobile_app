@@ -4,7 +4,7 @@ import React from "react";
 import { Pressable, StyleSheet } from "react-native";
 import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
 import { ms } from "react-native-size-matters";
-import { getCartPalette } from "./palette";
+import { useCartPalette } from "./palette";
 
 interface CartItemSwipeableProps {
   children: React.ReactNode;
@@ -15,7 +15,7 @@ export default function CartItemSwipeable({
   children,
   onDelete,
 }: CartItemSwipeableProps) {
-  const palette = getCartPalette(false);
+  const palette = useCartPalette();
 
   return (
     <ReanimatedSwipeable

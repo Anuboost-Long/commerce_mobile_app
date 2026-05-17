@@ -3,7 +3,7 @@ import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { ms } from "react-native-size-matters";
 import { CartCurrencyMode } from "./data";
-import { getCartPalette } from "./palette";
+import { useCartPalette } from "./palette";
 
 interface CartToolbarProps {
   bulkMode: boolean;
@@ -20,7 +20,7 @@ export default function CartToolbar({
   onToggleBulkMode,
   onToggleCurrencyMode,
 }: CartToolbarProps) {
-  const palette = getCartPalette(false);
+  const palette = useCartPalette();
 
   return (
     <View style={styles.row}>

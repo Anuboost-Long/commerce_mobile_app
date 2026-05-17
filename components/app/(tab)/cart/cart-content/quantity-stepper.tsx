@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Pressable, StyleSheet, TextInput, View } from "react-native";
 import { ms } from "react-native-size-matters";
 import { CartItem } from "./data";
-import { getCartPalette } from "./palette";
+import { useCartPalette } from "./palette";
 
 export default function QuantityStepper({
   item,
@@ -13,7 +13,7 @@ export default function QuantityStepper({
   item: CartItem;
   onChange: (itemId: string, quantity: number) => void;
 }) {
-  const palette = getCartPalette(false);
+  const palette = useCartPalette();
   const [draftQuantity, setDraftQuantity] = useState(String(item.quantity));
 
   return (
@@ -73,21 +73,21 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
-    gap: ms(6),
-    borderRadius: ms(18),
+    gap: ms(4),
+    borderRadius: ms(999),
     borderWidth: 1,
-    paddingHorizontal: ms(6),
-    paddingVertical: ms(4),
+    paddingHorizontal: ms(5),
+    paddingVertical: ms(3),
   },
   button: {
-    width: ms(30),
-    height: ms(30),
-    borderRadius: ms(12),
+    width: ms(24),
+    height: ms(24),
+    borderRadius: ms(999),
     alignItems: "center",
     justifyContent: "center",
   },
   input: {
-    minWidth: ms(30),
+    minWidth: ms(24),
     textAlign: "center",
     paddingVertical: 0,
   },

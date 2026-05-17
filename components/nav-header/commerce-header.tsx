@@ -1,6 +1,8 @@
 import { IconAsset } from "@/assets/icon-asset";
+import { Screen } from "@/constants/screens";
 import useHeaderCalc, { HeaderProp } from "@/hooks/useHeaderCalc";
 import useThemeStyle, { StyleParam } from "@/hooks/useThemeStyle";
+import { NavigationHelper } from "@/utils/navigation-helper";
 import { fastStyle } from "@/utils/styles";
 import { BlurView } from "expo-blur";
 import { StatusBar } from "expo-status-bar";
@@ -85,11 +87,25 @@ export default function CommerceHeader({
 
             <View style={themeStyle.actionRow}>
               {showCart && (
-                <Pressable style={themeStyle.actionButton}>
+                <Pressable
+                  style={themeStyle.actionButton}
+                  onPress={() =>
+                    NavigationHelper.navigate({ pathname: Screen.Tab.cart })
+                  }
+                  accessibilityLabel="Open cart"
+                >
                   <IndicatorIcon icon={IconAsset.Cart} number={100} />
                 </Pressable>
               )}
-              <Pressable style={themeStyle.actionButton}>
+              <Pressable
+                style={themeStyle.actionButton}
+                onPress={() =>
+                  NavigationHelper.navigate({
+                    pathname: Screen.Account.notification,
+                  })
+                }
+                accessibilityLabel="Open notifications"
+              >
                 <IndicatorIcon icon={IconAsset.Bell} number={10} />
               </Pressable>
             </View>

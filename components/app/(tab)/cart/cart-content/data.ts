@@ -169,12 +169,14 @@ export const frequentlyBoughtTogether: TogetherItem[] = [
 export const createInitialSellerGroups = (): CartSellerGroup[] => {
   return sellers.map((seller, sellerIndex) => {
     const items: CartItem[] = Array.from({ length: 18 }, (_, itemIndex) => {
-      const templateIndex = (sellerIndex * 3 + itemIndex) % productTemplates.length;
+      const templateIndex =
+        (sellerIndex * 3 + itemIndex) % productTemplates.length;
       const variantIndex = itemIndex % variants.length;
       const basePrice = 18 + ((sellerIndex + itemIndex) % 8) * 6;
       const compareAtPrice = basePrice + 6 + (itemIndex % 3) * 4;
       const stockLeft = ((itemIndex + sellerIndex) % 7) + 1;
-      const image = skincareImages[(sellerIndex + itemIndex) % skincareImages.length];
+      const image =
+        skincareImages[(sellerIndex + itemIndex) % skincareImages.length];
 
       return {
         id: `${seller.id}-item-${itemIndex + 1}`,
@@ -182,17 +184,24 @@ export const createInitialSellerGroups = (): CartSellerGroup[] => {
         sellerName: seller.name,
         title: productTemplates[templateIndex],
         variant: variants[variantIndex],
-        skinFocus: skinFocuses[(templateIndex + itemIndex) % skinFocuses.length],
+        skinFocus:
+          skinFocuses[(templateIndex + itemIndex) % skinFocuses.length],
         quantity: (itemIndex % 3) + 1,
         unitPrice: basePrice,
         compareAtPrice,
         stockLeft,
         image,
         imageThumb: `${image}&w=40&q=20`,
-        badge: itemIndex % 4 === 0 ? "Flash deal" : itemIndex % 5 === 0 ? "Best seller" : "Editor pick",
+        badge:
+          itemIndex % 4 === 0
+            ? "Flash deal"
+            : itemIndex % 5 === 0
+            ? "Best seller"
+            : "Editor pick",
         syncState: "idle",
         isSavedForLater: false,
-        priceChangeLabel: itemIndex % 6 === 0 ? "Price adjusted 2 mins ago" : "",
+        priceChangeLabel:
+          itemIndex % 6 === 0 ? "Price adjusted 2 mins ago" : "",
         liveDealMinutesLeft: 45 - itemIndex,
       };
     });
@@ -225,25 +234,30 @@ export const getVisibleSections = (
 };
 
 export const getCartSummary = (groups: CartSellerGroup[]): SummaryState => {
-  const totals = groups.flatMap((group) => group.items).reduce(
-    (acc, item) => {
-      const lineTotal = item.unitPrice * item.quantity;
-      const compareAtLine = item.compareAtPrice * item.quantity;
+  const totals = groups
+    .flatMap((group) => group.items)
+    .reduce(
+      (acc, item) => {
+        const lineTotal = item.unitPrice * item.quantity;
+        const compareAtLine = item.compareAtPrice * item.quantity;
 
-      return {
-        subtotal: acc.subtotal + lineTotal,
-        savings: acc.savings + (compareAtLine - lineTotal),
-        itemCount: acc.itemCount + item.quantity,
-      };
-    },
-    { subtotal: 0, savings: 0, itemCount: 0 }
-  );
+        return {
+          subtotal: acc.subtotal + lineTotal,
+          savings: acc.savings + (compareAtLine - lineTotal),
+          itemCount: acc.itemCount + item.quantity,
+        };
+      },
+      { subtotal: 0, savings: 0, itemCount: 0 }
+    );
 
   return {
     subtotal: totals.subtotal,
     savings: totals.savings,
     itemCount: totals.itemCount,
-    total: totals.subtotal - Math.min(totals.savings * 0.15, 64) + 12,
-    checkoutRoute: Screen.Payment.payment_option,
+    total:
+      totals.itemCount > 0
+        ? totals.subtotal - Math.min(totals.savings * 0.15, 64) + 12
+        : 0,
+    checkoutRoute: Screen.Payment.payment_summary,
   };
 };

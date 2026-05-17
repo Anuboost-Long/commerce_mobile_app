@@ -1,12 +1,6 @@
+import ProductSearchContent from "@/components/app/(product)/product-search/product-search-content";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
 
 export default function Page() {
-  return (
-    <View>
-      <Text>Page</Text>
-    </View>
-  );
+  return <ProductSearchContent />;
 }
-
-const styles = StyleSheet.create({});

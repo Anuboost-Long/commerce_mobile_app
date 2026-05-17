@@ -4,7 +4,7 @@ import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { ms } from "react-native-size-matters";
 import { CartCurrencyMode, LOYALTY_POINT_RATE } from "./data";
-import { getCartPalette } from "./palette";
+import { useCartPalette } from "./palette";
 
 export default function CartPromoRewardsStrip({
   currencyMode,
@@ -15,7 +15,7 @@ export default function CartPromoRewardsStrip({
   freeGiftRemaining: number;
   savings: number;
 }) {
-  const palette = getCartPalette(false);
+  const palette = useCartPalette();
 
   const cards = [
     {

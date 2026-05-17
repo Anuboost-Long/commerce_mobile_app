@@ -2,7 +2,7 @@ import AppText from "@/components/common/app-text";
 import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { ms } from "react-native-size-matters";
-import { getCartPalette } from "./palette";
+import { useCartPalette } from "./palette";
 
 export default function UndoSnackbar({
   label,
@@ -13,7 +13,7 @@ export default function UndoSnackbar({
   onUndo: () => void;
   visible: boolean;
 }) {
-  const palette = getCartPalette(false);
+  const palette = useCartPalette();
 
   if (!visible) {
     return null;

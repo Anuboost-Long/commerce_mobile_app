@@ -15,7 +15,7 @@ export default function Header() {
   return (
     <View>
       <SizedBox height={tab_header} />
-      <SizedBox height={10} />
+      <SizedBox height={30} />
       <Input
         Icon={IconAsset.Search}
         onChangeText={() => {}}

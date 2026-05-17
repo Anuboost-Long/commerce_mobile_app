@@ -1,12 +1,6 @@
+import ProductListContent from "@/components/app/(product)/product-list/product-list-content";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
 
 export default function Page() {
-  return (
-    <View>
-      <Text>Page</Text>
-    </View>
-  );
+  return <ProductListContent />;
 }
-
-const styles = StyleSheet.create({});

@@ -1,17 +1,16 @@
 import AppText from "@/components/common/app-text";
+import { handleFormatCurrency } from "@/utils/currency-helper";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { ms } from "react-native-size-matters";
-import { handleFormatCurrency } from "@/utils/currency-helper";
-import { CartCurrencyMode, CartItem, LOYALTY_POINT_RATE } from "./data";
 import CartItemSwipeable from "./cart-item-swipeable";
-import { getCartPalette } from "./palette";
+import { CartCurrencyMode, CartItem, LOYALTY_POINT_RATE } from "./data";
+import { useCartPalette } from "./palette";
 import QuantityStepper from "./quantity-stepper";
 
 interface CartItemCardProps {
-  bulkMode: boolean;
   currencyMode: CartCurrencyMode;
   item: CartItem;
   onDelete: () => void;
@@ -23,7 +22,6 @@ interface CartItemCardProps {
 }
 
 export default function CartItemCard({
-  bulkMode,
   currencyMode,
   item,
   onDelete,
@@ -33,7 +31,7 @@ export default function CartItemCard({
   onToggleSelect,
   selected,
 }: CartItemCardProps) {
-  const palette = getCartPalette(false);
+  const palette = useCartPalette();
   const livePriceLabel =
     currencyMode === "currency"
       ? handleFormatCurrency(item.unitPrice)
@@ -41,24 +39,36 @@ export default function CartItemCard({
 
   return (
     <CartItemSwipeable onDelete={onDelete}>
-      <View style={[styles.container, { backgroundColor: palette.card, borderColor: palette.border, shadowColor: palette.shadow }]}>
-        {bulkMode && (
-          <Pressable onPress={() => onToggleSelect(item.id)} style={styles.selectionWrap}>
-            <View
-              style={[
-                styles.selectionCircle,
-                {
-                  backgroundColor: selected ? palette.accentStrong : palette.cardSoft,
-                  borderColor: palette.border,
-                },
-              ]}
-            >
-              {selected && (
-                <Feather name="check" size={ms(14)} color={palette.white} />
-              )}
-            </View>
-          </Pressable>
-        )}
+      <View
+        style={[
+          styles.container,
+          {
+            backgroundColor: palette.card,
+            borderColor: selected ? palette.accentStrong : palette.border,
+            shadowColor: palette.shadow,
+          },
+        ]}
+      >
+        <Pressable
+          onPress={() => onToggleSelect(item.id)}
+          style={styles.selectionWrap}
+        >
+          <View
+            style={[
+              styles.selectionCircle,
+              {
+                backgroundColor: selected
+                  ? palette.accentStrong
+                  : palette.cardSoft,
+                borderColor: selected ? palette.accentStrong : palette.border,
+              },
+            ]}
+          >
+            {selected && (
+              <Feather name="check" size={ms(14)} color={palette.white} />
+            )}
+          </View>
+        </Pressable>
 
         <Pressable onPress={onOpenImage} style={styles.thumbWrap}>
           <Image
@@ -68,8 +78,13 @@ export default function CartItemCard({
             transition={220}
             style={styles.thumb}
           />
-          <View style={[styles.badge, { backgroundColor: palette.white }]}>
-            <AppText font="SemiBold" fontSize="SubText" style={{ color: palette.accentStrong }}>
+          <View style={[styles.badge, { backgroundColor: palette.accentStrong }]}>
+            <AppText
+              font="SemiBold"
+              fontSize="SubText"
+              numLines={1}
+              style={{ color: palette.white }}
+            >
               {item.badge}
             </AppText>
           </View>
@@ -78,17 +93,30 @@ export default function CartItemCard({
         <View style={styles.content}>
           <View style={styles.topRow}>
             <View style={styles.copyWrap}>
-              <AppText font="SemiBold" fontSize="SubTitle" style={{ color: palette.text }}>
+              <AppText
+                font="SemiBold"
+                fontSize="SubTitle"
+                numLines={2}
+                style={{ color: palette.text }}
+              >
                 {item.title}
               </AppText>
-              <AppText font="Medium" fontSize="SubText" style={{ color: palette.subtext }}>
+              <AppText
+                font="Medium"
+                fontSize="SubText"
+                numLines={1}
+                style={{ color: palette.subtext }}
+              >
                 {item.variant} • {item.skinFocus}
               </AppText>
             </View>
             <View style={styles.iconActions}>
               <Pressable
                 onPress={() => onToggleSaved(item.id)}
-                accessibilityLabel={`${item.isSavedForLater ? "Remove from" : "Save to"} wishlist`}
+                accessibilityLabel={`${
+                  item.isSavedForLater ? "Remove from" : "Save to"
+                } wishlist`}
+                hitSlop={ms(8)}
               >
                 <MaterialCommunityIcons
                   name={item.isSavedForLater ? "heart" : "heart-outline"}
@@ -96,21 +124,47 @@ export default function CartItemCard({
                   color={palette.accentStrong}
                 />
               </Pressable>
-              <Pressable onPress={onDelete} accessibilityLabel={`Delete ${item.title}`}>
+              <Pressable
+                onPress={onDelete}
+                accessibilityLabel={`Delete ${item.title}`}
+                hitSlop={ms(8)}
+              >
                 <Feather name="trash-2" size={ms(17)} color={palette.subtext} />
               </Pressable>
             </View>
           </View>
 
           <View style={styles.statusRow}>
-            <View style={[styles.statusPill, { backgroundColor: palette.accentSoft }]}>
-              <AppText font="SemiBold" fontSize="SubText" style={{ color: palette.accentStrong }}>
-                {item.stockLeft > 0 ? `Only ${item.stockLeft} left` : "Out of stock"}
+            <View
+              style={[
+                styles.statusPill,
+                { backgroundColor: palette.accentSoft },
+              ]}
+            >
+              <AppText
+                font="SemiBold"
+                fontSize="SubText"
+                numLines={1}
+                style={{ color: palette.accentStrong }}
+              >
+                {item.stockLeft > 0
+                  ? `Only ${item.stockLeft} left`
+                  : "Out of stock"}
               </AppText>
             </View>
             {item.liveDealMinutesLeft > 0 && (
-              <View style={[styles.timerPill, { backgroundColor: palette.cardSoft }]}>
-                <AppText font="SemiBold" fontSize="SubText" style={{ color: palette.roseGold }}>
+              <View
+                style={[
+                  styles.timerPill,
+                  { backgroundColor: palette.cardSoft },
+                ]}
+              >
+                <AppText
+                  font="SemiBold"
+                  fontSize="SubText"
+                  numLines={1}
+                  style={{ color: palette.roseGold }}
+                >
                   Flash deal {item.liveDealMinutesLeft}m
                 </AppText>
               </View>
@@ -122,24 +176,45 @@ export default function CartItemCard({
               <AppText
                 font="Bold"
                 fontSize="Title"
+                numLines={1}
                 style={{ color: palette.text }}
-                accessibilityLabel={`Price updated to ${livePriceLabel}`}
               >
                 {livePriceLabel}
               </AppText>
-              <AppText font="Medium" fontSize="SubText" style={{ color: palette.subtext, textDecorationLine: "line-through" }}>
+              <AppText
+                font="Medium"
+                fontSize="SubText"
+                numLines={1}
+                style={{
+                  color: palette.subtext,
+                  textDecorationLine: "line-through",
+                }}
+              >
                 {currencyMode === "currency"
                   ? handleFormatCurrency(item.compareAtPrice)
-                  : `${Math.round(item.compareAtPrice * LOYALTY_POINT_RATE)} pts`}
+                  : `${Math.round(
+                      item.compareAtPrice * LOYALTY_POINT_RATE
+                    )} pts`}
               </AppText>
             </View>
             <QuantityStepper item={item} onChange={onQuantityChange} />
           </View>
 
           {!!item.priceChangeLabel && (
-            <View style={[styles.liveBanner, { backgroundColor: palette.cardSoft }]}>
-              <Feather name="activity" size={ms(14)} color={palette.accentStrong} />
-              <AppText font="Medium" fontSize="SubText" style={{ color: palette.accentStrong }}>
+            <View
+              style={[styles.liveBanner, { backgroundColor: palette.cardSoft }]}
+            >
+              <Feather
+                name="activity"
+                size={ms(14)}
+                color={palette.accentStrong}
+              />
+              <AppText
+                font="Medium"
+                fontSize="SubText"
+                numLines={1}
+                style={{ color: palette.accentStrong }}
+              >
                 {item.priceChangeLabel}
               </AppText>
             </View>
@@ -152,53 +227,54 @@ export default function CartItemCard({
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: ms(24),
+    borderRadius: ms(14),
     borderWidth: 1,
-    padding: ms(12),
+    padding: ms(8),
     flexDirection: "row",
-    gap: ms(12),
-    marginBottom: ms(10),
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.08,
-    shadowRadius: 14,
-    elevation: 4,
+    gap: ms(8),
+    marginBottom: ms(6),
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 1,
   },
   selectionWrap: {
-    justifyContent: "center",
+    justifyContent: "flex-start",
+    paddingTop: ms(28),
   },
   selectionCircle: {
-    width: ms(24),
-    height: ms(24),
+    width: ms(22),
+    height: ms(22),
     borderRadius: ms(999),
     borderWidth: 1,
     alignItems: "center",
     justifyContent: "center",
   },
   thumbWrap: {
-    width: ms(92),
-    gap: ms(8),
+    width: ms(78),
   },
   thumb: {
-    width: ms(92),
-    height: ms(112),
-    borderRadius: ms(20),
+    width: ms(78),
+    height: ms(86),
+    borderRadius: ms(10),
   },
   badge: {
     position: "absolute",
-    left: ms(6),
-    top: ms(6),
-    borderRadius: ms(999),
-    paddingHorizontal: ms(8),
-    paddingVertical: ms(4),
+    left: ms(4),
+    top: ms(4),
+    maxWidth: ms(70),
+    borderRadius: ms(4),
+    paddingHorizontal: ms(5),
+    paddingVertical: ms(2),
   },
   content: {
     flex: 1,
-    gap: ms(10),
+    gap: ms(6),
   },
   topRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: ms(12),
+    gap: ms(8),
   },
   copyWrap: {
     flex: 1,
@@ -206,38 +282,42 @@ const styles = StyleSheet.create({
   },
   iconActions: {
     flexDirection: "row",
-    gap: ms(12),
+    gap: ms(10),
     paddingTop: ms(2),
   },
   statusRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: ms(8),
+    gap: ms(6),
   },
   statusPill: {
     borderRadius: ms(999),
-    paddingHorizontal: ms(10),
-    paddingVertical: ms(6),
+    paddingHorizontal: ms(8),
+    paddingVertical: ms(4),
+    maxWidth: "58%",
   },
   timerPill: {
     borderRadius: ms(999),
-    paddingHorizontal: ms(10),
-    paddingVertical: ms(6),
+    paddingHorizontal: ms(8),
+    paddingVertical: ms(4),
+    maxWidth: "42%",
   },
   priceRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    gap: ms(10),
-    alignItems: "center",
+    gap: ms(8),
+    alignItems: "flex-end",
   },
   priceWrap: {
     flex: 1,
-    gap: ms(2),
+    flexDirection: "row",
+    alignItems: "flex-end",
+    gap: ms(6),
   },
   liveBanner: {
-    borderRadius: ms(16),
-    paddingHorizontal: ms(10),
-    paddingVertical: ms(8),
+    borderRadius: ms(10),
+    paddingHorizontal: ms(8),
+    paddingVertical: ms(5),
     flexDirection: "row",
     alignItems: "center",
     gap: ms(6),

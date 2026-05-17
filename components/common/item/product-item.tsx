@@ -1,6 +1,8 @@
 import { Dimension } from "@/constants/dimension";
+import { Screen } from "@/constants/screens";
 import useThemeStyle, { StyleParam } from "@/hooks/useThemeStyle";
 import { handleDiscount, handleFormatCurrency } from "@/utils/currency-helper";
+import { NavigationHelper } from "@/utils/navigation-helper";
 import { fastStyle, metricStyle } from "@/utils/styles";
 import { Image } from "expo-image";
 import React from "react";
@@ -21,7 +23,15 @@ export default function ProductItem({ item }: ProductItemProps) {
   const { themeStyle } = useThemeStyle(styles);
   return (
     <View style={themeStyle.container}>
-      <TouchableOpacity style={themeStyle.pressable}>
+      <TouchableOpacity
+        onPress={() =>
+          NavigationHelper.navigate({
+            pathname: Screen.Product.product_detail,
+            params: { productId: item.id },
+          })
+        }
+        style={themeStyle.pressable}
+      >
         <Image
           style={themeStyle.image}
           contentFit="cover"

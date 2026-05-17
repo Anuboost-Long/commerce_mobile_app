@@ -46,8 +46,8 @@ export default function DrawerItem({
           </View>
         </View>
       </View>
-      <View style={themeStyle.trailingIcon}>
-        <IconAsset.CaretRight width={18} height={18} fill={theme.colors.primary} />
+      <View style={[themeStyle.trailingIcon, isFooter && themeStyle.trailingIconActive]}>
+        <IconAsset.CaretRight width={18} height={18} fill={isFooter ? theme.colors.white : theme.colors.textSecondary} />
       </View>
     </Pressable>
   );
@@ -114,6 +114,9 @@ const styles = ({ colors }: StyleParam) =>
       borderRadius: ms(30),
       alignItems: "center",
       justifyContent: "center",
-      backgroundColor: colors.primaryOpacity,
+      backgroundColor: colors.border,
+    },
+    trailingIconActive: {
+      backgroundColor: colors.primary,
     },
   });

@@ -1,3 +1,4 @@
+import useCartSelection from "@/hooks/useCartSelection";
 import useHeaderCalc from "@/hooks/useHeaderCalc";
 import { NavigationHelper } from "@/utils/navigation-helper";
 import React, { useEffect, useRef, useState } from "react";
@@ -8,38 +9,35 @@ import BulkEditToolbar from "./cart-content/bulk-edit-toolbar";
 import CartHeaderHero from "./cart-content/cart-header-hero";
 import CartItemCard from "./cart-content/cart-item-card";
 import CartLoadingSkeleton from "./cart-content/cart-loading-skeleton";
-import CartPromoRewardsStrip from "./cart-content/cart-promo-rewards-strip";
-import CartToolbar from "./cart-content/cart-toolbar";
 import {
   cartScope,
   createInitialSellerGroups,
   frequentlyBoughtTogether,
-  getCartSummary,
   getVisibleSections,
-  LOYALTY_POINT_RATE,
   type CartCurrencyMode,
   type CartItem,
   type CartSellerGroup,
 } from "./cart-content/data";
 import FrequentlyBoughtTogether from "./cart-content/frequently-bought-together";
 import ImageZoomModal from "./cart-content/image-zoom-modal";
-import { getCartPalette } from "./cart-content/palette";
+import { useCartPalette } from "./cart-content/palette";
 import SellerSectionHeader from "./cart-content/seller-section-header";
-import StickySummaryBar from "./cart-content/sticky-summary-bar";
+import StickySummaryBar, {
+  CART_SUMMARY_BOTTOM_OFFSET,
+} from "./cart-content/sticky-summary-bar";
 import UndoSnackbar from "./cart-content/undo-snackbar";
+
+const CART_SUMMARY_ESTIMATED_HEIGHT = ms(82);
 
 export default function CartContent() {
   const { tab_header } = useHeaderCalc();
-  const palette = getCartPalette(false);
+  const palette = useCartPalette();
 
   const [sellerGroups, setSellerGroups] = useState<CartSellerGroup[]>(() =>
     createInitialSellerGroups()
   );
   const [visibleSellerCount, setVisibleSellerCount] = useState(3);
-  const [bulkMode, setBulkMode] = useState(false);
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const [currencyMode, setCurrencyMode] =
-    useState<CartCurrencyMode>("currency");
+  const currencyMode: CartCurrencyMode = "currency";
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
@@ -53,7 +51,14 @@ export default function CartContent() {
   const snackbarTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const visibleSections = getVisibleSections(sellerGroups, visibleSellerCount);
-  const summary = getCartSummary(sellerGroups);
+  const {
+    removeItemSelection,
+    selectedItemIds,
+    setSelectedItemIds,
+    summary,
+    toggleGroupSelection,
+    toggleItemSelection,
+  } = useCartSelection(sellerGroups);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -195,7 +200,7 @@ export default function CartContent() {
           : group
       )
     );
-    setSelectedItems((prev) => prev.filter((id) => id !== item.id));
+    removeItemSelection(item.id);
     setUndoPayload({ item, groupId });
     scheduleUndoDismiss();
   };
@@ -215,54 +220,22 @@ export default function CartContent() {
     setUndoPayload(null);
   };
 
-  const toggleBulkMode = () => {
-    setBulkMode((prev) => !prev);
-    setSelectedItems([]);
-  };
-
-  const toggleItemSelection = (itemId: string) => {
-    setSelectedItems((prev) =>
-      prev.includes(itemId)
-        ? prev.filter((id) => id !== itemId)
-        : [...prev, itemId]
-    );
-  };
-
-  const toggleGroupCollapse = (groupId: string) => {
-    setSellerGroups((prev) =>
-      prev.map((group) =>
-        group.id === groupId ? { ...group, collapsed: !group.collapsed } : group
-      )
-    );
-  };
-
-  const toggleGroupSelection = (group: CartSellerGroup) => {
-    const itemIds = group.items.map((item) => item.id);
-    const areAllSelected = itemIds.every((id) => selectedItems.includes(id));
-
-    setSelectedItems((prev) =>
-      areAllSelected
-        ? prev.filter((id) => !itemIds.includes(id))
-        : Array.from(new Set([...prev, ...itemIds]))
-    );
-  };
-
   const bulkDelete = () => {
-    if (selectedItems.length === 0) {
+    if (selectedItemIds.length === 0) {
       return;
     }
 
     const payloadGroup = sellerGroups.find((group) =>
-      group.items.some((item) => item.id === selectedItems[0])
+      group.items.some((item) => item.id === selectedItemIds[0])
     );
     const payloadItem = payloadGroup?.items.find(
-      (item) => item.id === selectedItems[0]
+      (item) => item.id === selectedItemIds[0]
     );
 
     setSellerGroups((prev) =>
       prev.map((group) => ({
         ...group,
-        items: group.items.filter((item) => !selectedItems.includes(item.id)),
+        items: group.items.filter((item) => !selectedItemIds.includes(item.id)),
       }))
     );
 
@@ -271,8 +244,7 @@ export default function CartContent() {
       scheduleUndoDismiss();
     }
 
-    setSelectedItems([]);
-    setBulkMode(false);
+    setSelectedItemIds([]);
   };
 
   const bulkMoveToWishlist = () => {
@@ -280,14 +252,21 @@ export default function CartContent() {
       prev.map((group) => ({
         ...group,
         items: group.items.map((item) =>
-          selectedItems.includes(item.id)
+          selectedItemIds.includes(item.id)
             ? { ...item, isSavedForLater: true }
             : item
         ),
       }))
     );
-    setSelectedItems([]);
-    setBulkMode(false);
+    setSelectedItemIds([]);
+  };
+
+  const toggleBulkEdit = () => {
+    setSelectedItemIds(
+      selectedItemIds.length > 0
+        ? []
+        : sellerGroups.flatMap((group) => group.items.map((item) => item.id))
+    );
   };
 
   const refreshCart = () => {
@@ -319,7 +298,6 @@ export default function CartContent() {
         keyExtractor={(item) => item.id}
         renderItem={({ item, section }) => (
           <CartItemCard
-            bulkMode={bulkMode}
             currencyMode={currencyMode}
             item={item}
             onDelete={() => deleteItem(section.id, item)}
@@ -327,39 +305,29 @@ export default function CartContent() {
             onQuantityChange={updateItemQuantity}
             onToggleSaved={toggleSaved}
             onToggleSelect={toggleItemSelection}
-            selected={selectedItems.includes(item.id)}
+            selected={selectedItemIds.includes(item.id)}
           />
         )}
         renderSectionHeader={({ section }) => (
           <SellerSectionHeader
-            bulkMode={bulkMode}
             group={section}
-            onToggleCollapse={toggleGroupCollapse}
             onToggleSelectAll={toggleGroupSelection}
             selectedCount={
-              section.items.filter((item) => selectedItems.includes(item.id))
+              section.items.filter((item) => selectedItemIds.includes(item.id))
                 .length
             }
           />
         )}
         ListHeaderComponent={
           <View style={styles.headerWrap}>
-            {cartScope.hero && <CartHeaderHero itemCount={summary.itemCount} />}
-            <CartToolbar
-              bulkMode={bulkMode}
-              currencyMode={currencyMode}
-              loyaltyPoints={Math.round(summary.total * LOYALTY_POINT_RATE)}
-              onToggleBulkMode={toggleBulkMode}
-              onToggleCurrencyMode={setCurrencyMode}
+            <CartHeaderHero
+              itemCount={summary.itemCount}
+              onToggleBulkEdit={toggleBulkEdit}
+              selectedCount={selectedItemIds.length}
             />
-            <CartPromoRewardsStrip
-              currencyMode={currencyMode}
-              freeGiftRemaining={Math.max(120 - summary.subtotal, 0)}
-              savings={summary.savings}
-            />
-            {bulkMode && (
+            {selectedItemIds.length > 0 && (
               <BulkEditToolbar
-                selectedCount={selectedItems.length}
+                selectedCount={selectedItemIds.length}
                 onDelete={bulkDelete}
                 onMoveToWishlist={bulkMoveToWishlist}
               />
@@ -372,7 +340,14 @@ export default function CartContent() {
               <FrequentlyBoughtTogether items={frequentlyBoughtTogether} />
             )}
             <AfterSalesBanner />
-            <View style={{ height: ms(130) }} />
+            <View
+              style={{
+                height:
+                  CART_SUMMARY_BOTTOM_OFFSET +
+                  CART_SUMMARY_ESTIMATED_HEIGHT +
+                  ms(18),
+              }}
+            />
           </View>
         }
         contentContainerStyle={[

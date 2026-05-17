@@ -1,10 +1,9 @@
 import ListProductItem from "@/components/common/item/list-product-item";
 import SizedBox from "@/components/common/sized-box";
-import { StyleParam } from "@/hooks/useThemeStyle";
 import { ProductItemType, ProductSample } from "@/mock/product.mock";
 import { fastStyle } from "@/utils/styles";
 import React from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList, View } from "react-native";
 import Header from "./home-content/header";
 
 export default function HomeContent() {
@@ -37,10 +36,3 @@ export default function HomeContent() {
     </View>
   );
 }
-
-const styles = ({ colors }: StyleParam) =>
-  StyleSheet.create({
-    title: {
-      color: colors.primary,
-    },
-  });

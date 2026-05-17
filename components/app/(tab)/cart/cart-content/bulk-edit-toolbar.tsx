@@ -2,7 +2,7 @@ import AppText from "@/components/common/app-text";
 import React from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import { ms } from "react-native-size-matters";
-import { getCartPalette } from "./palette";
+import { useCartPalette } from "./palette";
 
 export default function BulkEditToolbar({
   selectedCount,
@@ -13,7 +13,7 @@ export default function BulkEditToolbar({
   onDelete: () => void;
   onMoveToWishlist: () => void;
 }) {
-  const palette = getCartPalette(false);
+  const palette = useCartPalette();
 
   return (
     <View style={[styles.container, { backgroundColor: palette.card, borderColor: palette.border }]}>

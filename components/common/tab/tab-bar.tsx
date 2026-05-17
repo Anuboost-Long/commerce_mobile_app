@@ -9,6 +9,9 @@ import { Platform, StyleSheet, View } from "react-native";
 import { ms } from "react-native-size-matters";
 import TabButton from "./tab-button";
 
+export const TAB_BAR_HEIGHT = ms(55);
+export const TAB_BAR_BOTTOM_OFFSET = ms(25);
+
 export default function TabBar(props: BottomTabBarProps) {
   const { themeStyle, theme } = useThemeStyle(styles);
 
@@ -38,7 +41,7 @@ const styles = ({ colors }: StyleParam) =>
         ios: colors.surface,
         android: colors.surface,
       }),
-      height: ms(55),
+      height: TAB_BAR_HEIGHT,
       paddingHorizontal: ms(2),
       borderRadius: ms(40),
       overflow: "hidden",
@@ -52,7 +55,7 @@ const styles = ({ colors }: StyleParam) =>
       }),
     },
     layer: {
-      bottom: ms(25),
+      bottom: TAB_BAR_BOTTOM_OFFSET,
       alignSelf: "center",
       position: "absolute",
       backgroundColor: "transparent",

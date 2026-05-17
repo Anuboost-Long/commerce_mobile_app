@@ -6,14 +6,14 @@ import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { ms } from "react-native-size-matters";
 import { handleFormatCurrency } from "@/utils/currency-helper";
 import { TogetherItem } from "./data";
-import { getCartPalette } from "./palette";
+import { useCartPalette } from "./palette";
 
 export default function FrequentlyBoughtTogether({
   items,
 }: {
   items: TogetherItem[];
 }) {
-  const palette = getCartPalette(false);
+  const palette = useCartPalette();
 
   return (
     <View style={[styles.container, { backgroundColor: palette.card, borderColor: palette.border }]}>

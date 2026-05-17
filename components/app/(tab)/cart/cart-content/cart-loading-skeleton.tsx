@@ -1,14 +1,14 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { ms } from "react-native-size-matters";
-import { getCartPalette } from "./palette";
+import { useCartPalette } from "./palette";
 
 export default function CartLoadingSkeleton({
   topOffset,
 }: {
   topOffset: number;
 }) {
-  const palette = getCartPalette(false);
+  const palette = useCartPalette();
 
   return (
     <View style={[styles.screen, { backgroundColor: palette.screen, paddingTop: topOffset }]}>

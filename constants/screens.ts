@@ -8,6 +8,7 @@ export const Screen = {
     dashboard: "dashboard",
     orders: "orders",
     wish_list: "wish-list",
+    notification: "notification",
   },
 
   Auth: {
@@ -32,6 +33,7 @@ export const Screen = {
 
   Payment: {
     index: "(payment)",
+    payment_summary: "payment-summary",
     credit_card_payment: "credit-card-payment",
     payment_option: "payment-option",
     payment_success: "payment-success",
