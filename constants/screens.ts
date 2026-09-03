@@ -44,6 +44,8 @@ export const Screen = {
     product_detail: "product-detail",
     product_list: "product-list",
     product_search: "product-search",
+    product_category_list: "product-category-list",
+    product_store: "product-store",
   },
 
   Tab: {

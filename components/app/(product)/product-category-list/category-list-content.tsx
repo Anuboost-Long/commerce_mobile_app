@@ -1,25 +1,25 @@
 import ListProductItem from "@/components/common/item/list-product-item";
 import SizedBox from "@/components/common/sized-box";
+import useTheme from "@/core/theme/theme-context";
 import { ProductSample } from "@/mock/product.mock";
-import { fastStyle } from "@/utils/styles";
+import ProductListToolbar from "@/components/app/(product)/product-list/product-list-toolbar";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
 import { FlatList, View } from "react-native";
-import useTheme from "@/core/theme/theme-context";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ms } from "react-native-size-matters";
-import ProductListHeader from "./product-list-header";
-import ProductListToolbar from "./product-list-toolbar";
+import CategoryListHeader from "./category-list-header";
 
-export default function ProductListContent() {
-  const params = useLocalSearchParams<{ query?: string }>();
+export default function CategoryListContent() {
+  const params = useLocalSearchParams<{ categoryName?: string }>();
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
-  const query = params.query ?? "Products";
+  const categoryName = params.categoryName ?? "Category";
 
   return (
-    <View style={[fastStyle.flex, { backgroundColor: colors.background }]}>
-      <ProductListHeader query={query} />
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <CategoryListHeader categoryName={categoryName} />
+      <SizedBox height={10} />
       <ProductListToolbar />
       <FlatList
         data={ProductSample}
@@ -27,7 +27,7 @@ export default function ProductListContent() {
         numColumns={2}
         renderItem={({ item }) => <ListProductItem item={item} />}
         showsVerticalScrollIndicator={false}
-        ListFooterComponent={<SizedBox height={insets.bottom + ms(80)} />}
+        ListFooterComponent={<SizedBox height={Math.max(insets.bottom, ms(24))} />}
       />
     </View>
   );

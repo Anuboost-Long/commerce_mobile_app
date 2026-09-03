@@ -15,7 +15,7 @@ export default function ProductListHeader({ query }: { query: string }) {
     <View
       style={[
         styles.container,
-        { backgroundColor: palette.card, paddingTop: insets.top + ms(10) },
+        { backgroundColor: palette.card, paddingTop: insets.top },
       ]}
     >
       <Pressable
@@ -36,11 +36,7 @@ export default function ProductListHeader({ query }: { query: string }) {
           value={query}
           style={[styles.input, { color: palette.text }]}
         />
-        <IconAsset.Search
-          width={ms(22)}
-          height={ms(22)}
-          fill={palette.text}
-        />
+        <IconAsset.Search width={ms(22)} height={ms(22)} fill={palette.text} />
       </View>
       <Pressable style={styles.moreButton} accessibilityLabel="More options">
         <Feather name="more-horizontal" size={ms(25)} color={palette.text} />

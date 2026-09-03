@@ -1,11 +1,16 @@
 import AppText from "@/components/common/app-text";
 import { useLocalSearchParams } from "expo-router";
 import React, { useMemo, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { ms } from "react-native-size-matters";
+import Animated, {
+  useAnimatedScrollHandler,
+  useSharedValue,
+} from "react-native-reanimated";
 import { useCartPalette } from "../../(tab)/cart/cart-content/palette";
 import { getProductDetail } from "./data";
 import HeroMedia from "./hero-media";
+import ProductDetailHeader from "./product-detail-header";
 import ProductInfoPanel from "./product-info-panel";
 import PurchaseOptionsSheet from "./purchase-options-sheet";
 import SaleBanner from "./sale-banner";
@@ -19,18 +24,27 @@ import VariantSelector from "./variant-selector";
 export default function ProductDetailContent() {
   const params = useLocalSearchParams<{ productId?: string }>();
   const palette = useCartPalette();
-  const [purchaseMode, setPurchaseMode] = useState<ProductActionMode | null>(
-    null
-  );
-  const product = useMemo(
-    () => getProductDetail(params.productId),
-    [params.productId]
-  );
+  const [purchaseMode, setPurchaseMode] = useState<ProductActionMode | null>(null);
+  const product = useMemo(() => getProductDetail(params.productId), [params.productId]);
+
+  const scrollY = useSharedValue(0);
+  const threshold = useSharedValue(0);
+
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollY.value = event.contentOffset.y;
+    },
+  });
 
   return (
     <View style={[styles.container, { backgroundColor: palette.screen }]}>
-      <ScrollView
+      {/* Fixed animated header — glass over hero, solid after variant selector */}
+      <ProductDetailHeader scrollY={scrollY} threshold={threshold} />
+
+      <Animated.ScrollView
         showsVerticalScrollIndicator={false}
+        onScroll={scrollHandler}
+        scrollEventThrottle={16}
         contentContainerStyle={{ paddingBottom: PRODUCT_ACTION_BAR_HEIGHT + ms(24) }}
       >
         <HeroMedia product={product} />
@@ -38,6 +52,16 @@ export default function ProductDetailContent() {
         <View style={[styles.section, { backgroundColor: palette.card }]}>
           <VariantSelector product={product} />
         </View>
+
+        {/* Zero-height marker: its layout.y = scroll offset when it hits the top of screen */}
+        <View
+          onLayout={(e) => {
+            if (threshold.value === 0) {
+              threshold.value = e.nativeEvent.layout.y;
+            }
+          }}
+        />
+
         <ProductInfoPanel product={product} />
         <View style={[styles.divider, { backgroundColor: palette.border }]} />
         <StoreSummaryCard product={product} />
@@ -55,7 +79,8 @@ export default function ProductDetailContent() {
             now.
           </AppText>
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
+
       <StickyActionBar onActionPress={setPurchaseMode} />
       <PurchaseOptionsSheet
         mode={purchaseMode}

@@ -46,6 +46,18 @@ export default function ProductNavigation() {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name={Screen.Product.product_category_list}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={Screen.Product.product_store}
+        options={{
+          headerShown: false,
+        }}
+      />
     </Stack>
   );
 }

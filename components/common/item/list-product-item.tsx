@@ -18,8 +18,8 @@ export default function ListProductItem({
   isEvenRow,
 }: {
   item: ProductItemType;
-  isEven: boolean;
-  isEvenRow: boolean;
+  isEven?: boolean;
+  isEvenRow?: boolean;
 }) {
   const { themeStyle } = useThemeStyle(styles);
 

@@ -24,7 +24,7 @@ export default function TabBar(props: BottomTabBarProps) {
     <View style={themeStyle.layer}>
       <BlurView
         style={themeStyle.container}
-        intensity={theme.isDark ? 55 : 18}
+        intensity={theme.isDark ? 80 : 20}
         tint={theme.isDark ? "dark" : "light"}
       >
         {TabItems.map((item, index) => renderTabItem(item, index))}

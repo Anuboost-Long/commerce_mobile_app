@@ -1,12 +1,14 @@
 import AppText from "@/components/common/app-text";
 import { Dimension } from "@/constants/dimension";
+import { Screen } from "@/constants/screens";
 import useThemeStyle, { StyleParam } from "@/hooks/useThemeStyle";
 import { CategoryItemType } from "@/mock/category.mock";
+import { NavigationHelper } from "@/utils/navigation-helper";
 import { fastStyle } from "@/utils/styles";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { ms } from "react-native-size-matters";
 
 interface CategoryItemProp {
@@ -15,7 +17,15 @@ interface CategoryItemProp {
 export default function CategoryItem({ item }: CategoryItemProp) {
   const { themeStyle } = useThemeStyle(styles);
   return (
-    <View style={themeStyle.container}>
+    <Pressable
+      style={themeStyle.container}
+      onPress={() =>
+        NavigationHelper.navigate({
+          pathname: Screen.Product.product_category_list,
+          params: { categoryId: item.id, categoryName: item.name },
+        })
+      }
+    >
       <View style={themeStyle.wrapper}>
         <Image
           style={fastStyle.image}
@@ -35,7 +45,7 @@ export default function CategoryItem({ item }: CategoryItemProp) {
           </AppText>
         </LinearGradient>
       </View>
-    </View>
+    </Pressable>
   );
 }
 

@@ -4,9 +4,12 @@ import { ProductItemType, ProductSample } from "@/mock/product.mock";
 import { fastStyle } from "@/utils/styles";
 import React from "react";
 import { FlatList, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { ms } from "react-native-size-matters";
 import Header from "./home-content/header";
 
 export default function HomeContent() {
+  const insets = useSafeAreaInsets();
   const renderItem = ({
     item,
     index,
@@ -30,7 +33,7 @@ export default function HomeContent() {
         numColumns={2}
         data={ProductSample}
         keyExtractor={(item) => item.id.toString()}
-        ListFooterComponent={<SizedBox height={90} />}
+        ListFooterComponent={<SizedBox height={insets.bottom + ms(80)} />}
         renderItem={renderItem}
       />
     </View>

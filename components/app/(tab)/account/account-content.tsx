@@ -31,7 +31,7 @@ export default function AccountContent() {
       style={themeStyle.screen}
       contentContainerStyle={[
         themeStyle.contentContainer,
-        { paddingTop: tab_header },
+        { paddingTop: tab_header + ms(10) },
       ]}
       showsVerticalScrollIndicator={false}
     >

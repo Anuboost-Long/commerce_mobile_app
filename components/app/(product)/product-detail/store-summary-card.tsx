@@ -1,7 +1,9 @@
 import AppText from "@/components/common/app-text";
+import { Screen } from "@/constants/screens";
+import { NavigationHelper } from "@/utils/navigation-helper";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { ms } from "react-native-size-matters";
 import { useCartPalette } from "../../(tab)/cart/cart-content/palette";
 import { ProductDetail } from "./data";
@@ -10,7 +12,15 @@ export default function StoreSummaryCard({ product }: { product: ProductDetail }
   const palette = useCartPalette();
 
   return (
-    <View style={[styles.container, { backgroundColor: palette.card }]}>
+    <Pressable
+      style={[styles.container, { backgroundColor: palette.card }]}
+      onPress={() =>
+        NavigationHelper.navigate({
+          pathname: Screen.Product.product_store,
+          params: { storeName: product.storeName },
+        })
+      }
+    >
       <View style={styles.headerRow}>
         <View style={[styles.storeIcon, { backgroundColor: palette.accentSoft }]}>
           <MaterialCommunityIcons
@@ -33,7 +43,7 @@ export default function StoreSummaryCard({ product }: { product: ProductDetail }
         </View>
         <Feather name="chevron-right" size={ms(18)} color={palette.subtext} />
       </View>
-    </View>
+    </Pressable>
   );
 }
 

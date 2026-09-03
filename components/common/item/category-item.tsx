@@ -1,4 +1,6 @@
+import { Screen } from "@/constants/screens";
 import useThemeStyle, { StyleParam } from "@/hooks/useThemeStyle";
+import { NavigationHelper } from "@/utils/navigation-helper";
 import { fastStyle } from "@/utils/styles";
 import { Image } from "expo-image";
 import React from "react";
@@ -14,7 +16,15 @@ export default function CategoryItem({
   const { themeStyle } = useThemeStyle(styles);
   return (
     <View style={fastStyle.colCenter}>
-      <TouchableOpacity style={themeStyle.container}>
+      <TouchableOpacity
+        style={themeStyle.container}
+        onPress={() =>
+          NavigationHelper.navigate({
+            pathname: Screen.Product.product_category_list,
+            params: { categoryId: item.id, categoryName: item.name },
+          })
+        }
+      >
         <Image
           style={themeStyle.image}
           source={{ uri: "https://placehold.co/60x60" }}
